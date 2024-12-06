@@ -1,0 +1,56 @@
+2024-12-06 14:34:55,060 - __main__ - INFO - System components initialized successfully
+2024-12-06 14:34:58,772 - __main__ - INFO - Starting application
+2024-12-06 14:35:34,402 - __main__ - INFO - Application cleanup completed
+2024-12-06 14:36:56,881 - __main__ - INFO - System components initialized successfully
+2024-12-06 14:36:59,526 - __main__ - INFO - Starting application
+2024-12-06 14:37:13,958 - __main__ - INFO - System components initialized successfully
+2024-12-06 14:37:16,531 - __main__ - INFO - Starting application
+2024-12-06 19:43:22,733 - __main__ - ERROR - Error initializing system: Can't instantiate abstract class ObjectDetector with abstract method detect_object
+2024-12-06 19:43:22,733 - root - ERROR - Fatal error: Can't instantiate abstract class ObjectDetector with abstract method detect_object
+2024-12-06 19:45:00,238 - __main__ - ERROR - Error initializing system: Can't instantiate abstract class FeaturePoseEstimator with abstract method get_pose
+2024-12-06 19:45:00,238 - root - ERROR - Fatal error: Can't instantiate abstract class FeaturePoseEstimator with abstract method get_pose
+2024-12-06 19:50:45,685 - __main__ - INFO - System components initialized successfully
+2024-12-06 19:50:48,677 - root - ERROR - Fatal error: 'BasicVisualizer' object has no attribute 'project_point'
+2024-12-06 19:58:46,204 - __main__ - INFO - System components initialized successfully
+2024-12-06 19:58:49,069 - root - ERROR - Fatal error: 'BasicVisualizer' object has no attribute 'project_point'
+2024-12-06 20:05:48,022 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:05:50,956 - root - ERROR - Fatal error: cannot unpack non-iterable CaptureWindow object
+2024-12-06 20:07:08,382 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:07:10,342 - root - ERROR - Fatal error: cannot unpack non-iterable CaptureWindow object
+2024-12-06 20:07:31,292 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:07:33,111 - root - ERROR - Fatal error: cannot unpack non-iterable CaptureWindow object
+2024-12-06 20:08:00,811 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:08:02,678 - root - ERROR - Fatal error: cannot unpack non-iterable CaptureWindow object
+2024-12-06 20:11:19,969 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:11:22,781 - root - ERROR - Fatal error: cannot unpack non-iterable CaptureWindow object
+2024-12-06 20:12:47,747 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:12:49,642 - root - ERROR - Fatal error: image "pyimage1" doesn't exist
+2024-12-06 20:13:53,372 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:13:55,321 - root - ERROR - Fatal error: image "pyimage1" doesn't exist
+2024-12-06 20:14:40,812 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:14:40,812 - root - ERROR - Fatal error: create_ui() missing 1 required positional argument: 'root'
+2024-12-06 20:15:14,567 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:15:14,572 - root - ERROR - Fatal error: create_ui() missing 1 required positional argument: 'root'
+2024-12-06 20:15:52,192 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:15:55,038 - __main__ - INFO - Starting application
+2024-12-06 20:17:16,574 - __main__ - INFO - Application cleanup completed
+2024-12-06 20:17:46,286 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:17:47,925 - __main__ - INFO - Starting application
+2024-12-06 20:20:32,382 - __main__ - INFO - Application cleanup completed
+2024-12-06 20:20:34,942 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:20:36,584 - __main__ - INFO - Starting application
+2024-12-06 20:25:55,714 - __main__ - INFO - Application cleanup completed
+2024-12-06 20:26:08,922 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:26:13,296 - __main__ - INFO - Starting application
+2024-12-06 20:28:01,702 - __main__ - INFO - Application cleanup completed
+2024-12-06 20:28:28,355 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:28:32,935 - __main__ - INFO - Starting application
+2024-12-06 20:28:52,823 - __main__ - INFO - Application cleanup completed
+2024-12-06 20:29:24,924 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:29:29,332 - __main__ - INFO - Starting application
+2024-12-06 20:31:20,222 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:31:24,822 - __main__ - INFO - Starting application
+2024-12-06 20:31:52,115 - __main__ - INFO - Application cleanup completed
+2024-12-06 20:33:07,502 - __main__ - INFO - System components initialized successfully
+2024-12-06 20:33:12,002 - __main__ - INFO - Starting application
+2024-12-06 20:34:20,826 - __main__ - INFO - Application cleanup completed

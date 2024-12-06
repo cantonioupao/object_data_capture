@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import cv2
 import numpy as np
 from core.config import CaptureConfig
+from core.base import QualityAnalyzer
 
 @dataclass
 class QualityMetrics:
@@ -13,7 +14,7 @@ class QualityMetrics:
     is_acceptable: bool
     message: str
 
-class BasicQualityAnalyzer:
+class BasicQualityAnalyzer(QualityAnalyzer):
     """
     Analyzes image quality using multiple metrics to ensure good captures.
     Think of this as a quality control inspector for our photos.
@@ -54,7 +55,7 @@ class BasicQualityAnalyzer:
         if object_size < self.config.MIN_OBJECT_SIZE:
             issues.append("Move closer to object")
         
-        is_acceptable = len(issues) == 0
+        is_acceptable = len(issues) == 2
         message = "Image quality good" if is_acceptable else " and ".join(issues)
         
         return QualityMetrics(

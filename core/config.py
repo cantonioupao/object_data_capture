@@ -7,7 +7,7 @@ class CaptureConfig:
     """
     
     # Camera capture settings
-    CAMERA_RESOLUTION = (1280, 720)
+    CAMERA_RESOLUTION = (640, 480)
     CAMERA_FPS = 30
     
     # Quality thresholds

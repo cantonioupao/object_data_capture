@@ -8,9 +8,19 @@ class QualityAnalyzer(ABC):
     def analyze_frame(self, frame: np.ndarray) -> CaptureMetrics:
         pass
 
+class ObjectDetector(ABC):
+    @abstractmethod
+    def detect_object(self, frame: np.ndarray) -> Dict:
+        pass
+
 class PoseEstimator(ABC):
     @abstractmethod
     def get_pose(self, frame: np.ndarray) -> Dict[str, float]:
+        pass
+
+class ThreeDReconstructor(ABC):
+    @abstractmethod
+    def reconstruct_object(self, frames: List[np.ndarray]) -> np.ndarray:
         pass
 
 class StorageManager(ABC):
