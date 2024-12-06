@@ -29,6 +29,7 @@ ui/__init__.py
 ui/tkinter_app.py
 utils/__init__.py
 utils/angle_utils.py
+utils/visualization.py
 visualization/__init__.py
 visualization/basic_visualizer.py
 visualization/capture_zone_visualizer.py

@@ -5,29 +5,39 @@ class SimpleObjectDetector(ObjectDetector):
     def __init__(self):
         self.background = None
         self.prev_frame = None
-        
+
     def detect_object(self, frame):
-        if self.background is None:
-            self.background = frame
-            return None
-            
-        # Motion detection
-        motion_mask = self._detect_motion(frame)
-        # Background subtraction
-        bg_mask = self._subtract_background(frame)
-        # Combine masks
-        mask = motion_mask & bg_mask
+        # Convert to grayscale
+        gray = np.mean(frame, axis=2)
+        
+        # Detect non-white objects (white is close to 255)
+        mask = gray < 150  # Threshold for non-white pixels
         
         if not np.any(mask):
             return None
             
-        # Object properties
+        y_coords, x_coords = np.where(mask)
+        x_min = np.min(x_coords)
+        x_max = np.max(x_coords)
+        y_min = np.min(y_coords) 
+        y_max = np.max(y_coords)
+
+        width = x_max - x_min
+        height = y_max - y_min
+
         return {
-            'bounds': self._get_bounds(mask),
-            'center': self._get_center(mask),
-            'contour': self._get_contour(mask),
-            'features': self._extract_features(frame, mask)
+        'bounds': (x_min, y_min, width, height),
+        'center': {'x': (x_min + x_max) // 2, 'y': (y_min + y_max) // 2},
+        'mask': mask
         }
+        
+       
+    def _get_contour(self, mask):
+        # Edge detection
+        contour = np.zeros_like(mask)
+        contour[1:] = mask[1:] != mask[:-1]  # Vertical edges
+        contour[:,1:] |= mask[:,1:] != mask[:,:-1]  # Horizontal edges
+        return np.where(contour)
         
     def _detect_motion(self, frame):
         if self.prev_frame is None:
