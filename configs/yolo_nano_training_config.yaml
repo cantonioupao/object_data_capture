@@ -1,0 +1,21 @@
+model:
+  input_size: 640  # Input image size
+  pretrained: true  # Use pretrained weights
+
+data:
+  yaml_path: "dataset.yaml"  # Path to dataset YAML file
+  
+training:
+  project_name: "damage_detection"
+  run_name: "yolo_nano_v1"
+  epochs: 100
+  batch_size: 16
+  learning_rate: 0.01
+  weight_decay: 0.0005
+  num_workers: 8
+  patience: 50  # Early stopping patience
+  save_period: 10  # Save checkpoint every N epochs
+
+export:
+  output_dir: "exported_models"
+  format: "torchscript"  # Export format

@@ -1,0 +1,15 @@
+# dataset.yaml
+path: ../datasets/damage_detection  # Dataset root directory
+train: images/train  # Train images relative to path
+val: images/val  # Validation images relative to path
+test: images/test # Test images relative to path
+
+# Classes
+names:
+  0: scratch
+  1: dent
+  2: crack
+  # Add more damage types as needed
+
+# Optional - adjustments for training
+nc: 3  # Number of classes
