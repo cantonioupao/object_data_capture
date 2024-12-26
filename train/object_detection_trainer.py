@@ -1,6 +1,6 @@
 import tensorflow as tf
 from .base_trainer import BaseTrainer
-from .data_loader import ObjectDetectionDataLoader
+from .data_loader.data_loader import ObjectDetectionDataLoader
 from .callbacks import TrainingCallbacks
 from .metrics import ObjectDetectionMetrics
 from pathlib import Path
@@ -25,34 +25,26 @@ class ObjectDetectionTrainer(BaseTrainer):
         self.setup_optimizer()
         
     def build_model(self):
-        """Build the model based on configuration"""
-        # Example using MobileNetV2 as backbone
         backbone = tf.keras.applications.MobileNetV2(
-            input_shape=self.config['model']['input_shape'],
-            include_top=False
+            input_shape=[224, 224, 3],
+            include_top=False,
+            weights='imagenet'
         )
+        backbone.trainable = False  # Freeze backbone
+
+        features = backbone.output
+        x = tf.keras.layers.Conv2D(256, 3, padding='same')(features)
+        x = tf.keras.layers.BatchNormalization()(x)
+        x = tf.keras.layers.ReLU()(x)
         
-        # Add detection heads
-        self.model = self._build_detection_head(backbone)
-        
-    def _build_detection_head(self, backbone):
-        """Build detection head on top of backbone"""
-        x = backbone.output
-        
-        # Classification head
-        cls_head = tf.keras.layers.Conv2D(
-            self.config['model']['num_classes'],
-            kernel_size=1
-        )(x)
-        
-        # Bounding box regression head
-        box_head = tf.keras.layers.Conv2D(4, kernel_size=1)(x)
-        
-        return tf.keras.Model(
+        cls_head = tf.keras.layers.Conv2D(1, 1)(x)
+        box_head = tf.keras.layers.Conv2D(4, 1)(x)
+
+        self.model = tf.keras.Model(
             inputs=backbone.input,
             outputs=[cls_head, box_head]
         )
-        
+            
     def setup_optimizer(self):
         """Setup optimizer with learning rate schedule"""
         initial_lr = self.config['training']['learning_rate']
@@ -109,14 +101,18 @@ class ObjectDetectionTrainer(BaseTrainer):
         return metrics
         
     def _classification_loss(self, y_true, y_pred):
-        """Calculate classification loss"""
-        return tf.keras.losses.SparseCategoricalCrossentropy(
+        """Binary classification loss per grid cell"""
+        return tf.keras.losses.BinaryCrossentropy(
             from_logits=True
         )(y_true, y_pred)
-        
+
     def _box_regression_loss(self, y_true, y_pred):
-        """Calculate bounding box regression loss"""
-        return tf.keras.losses.Huber()(y_true, y_pred)
+        """L1 loss for bounding box regression"""
+        # Only compute loss for cells containing objects
+        object_mask = tf.cast(y_true[..., 0] > 0, tf.float32)
+        return tf.reduce_sum(
+            object_mask * tf.abs(y_true - y_pred)
+        ) / tf.maximum(tf.reduce_sum(object_mask), 1)
         
     def train(self, epochs: int):
         """Main training loop"""

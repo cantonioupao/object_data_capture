@@ -1,6 +1,9 @@
 import numpy as np
 import tensorflow as tf
 from core.base import ObjectDetector
+import cv2
+import time
+
 
 class TFLiteDetector(ObjectDetector):
     def __init__(self, model_path='models/mobilenet_v1.tflite', 
@@ -8,6 +11,16 @@ class TFLiteDetector(ObjectDetector):
                  confidence_threshold=0.3):
         # Store configuration parameters
         self.confidence_threshold = confidence_threshold
+        
+        # FPS tracking with time window
+        self._fps_start_time = time.perf_counter()
+        self._fps_counter = 0
+        self._fps = 0.0
+        self._FPS_UPDATE_INTERVAL = 0.5  # Update FPS every 0.5 seconds
+        
+        # Separate inference timing
+        self.inference_time = 0
+        self._last_inference_time = 0
         
         try:
             # Initialize TFLite interpreter with error handling
@@ -31,17 +44,33 @@ class TFLiteDetector(ObjectDetector):
             print(f"Error initializing model: {str(e)}")
             raise
 
+    def get_fps(self):
+        """Get real-time FPS using time window method"""
+        current_time = time.perf_counter()
+        elapsed = current_time - self._fps_start_time
+        
+        self._fps_counter += 1
+        
+        # Update FPS every UPDATE_INTERVAL seconds
+        if elapsed >= self._FPS_UPDATE_INTERVAL:
+            self._fps = self._fps_counter / elapsed
+            self._fps_counter = 0
+            self._fps_start_time = current_time
+            
+        return self._fps
+
     def detect_object(self, frame):
         try:
-            # Verify frame is not None and has correct shape
+            # Start inference timing
+            inference_start = time.perf_counter()
+            
             if frame is None or len(frame.shape) != 3:
-                print("Invalid input frame")
                 return None
                 
             # Preprocess image
             input_data = self._preprocess(frame)
             
-            # Set input tensor and run inference
+            # Run inference
             self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
             self.interpreter.invoke()
             
@@ -50,36 +79,32 @@ class TFLiteDetector(ObjectDetector):
             classes = self.interpreter.get_tensor(self.output_details[1]['index'])[0]
             scores = self.interpreter.get_tensor(self.output_details[2]['index'])[0]
             
+            # Record pure inference time
+            self._last_inference_time = time.perf_counter() - inference_start
+            
             # Find best detection
             max_idx = np.argmax(scores)
             max_score = scores[max_idx]
             
             # Check confidence threshold
             if max_score < self.confidence_threshold:
-                print(f"No detections above threshold {self.confidence_threshold}")
                 return None
                 
-            # Convert normalized coordinates to pixel coordinates
-            box = boxes[max_idx]
+            # Calculate coordinates using numpy for efficiency
             h, w = frame.shape[:2]
-            x = int(box[1] * w)
-            y = int(box[0] * h)
-            width = int((box[3] - box[1]) * w)
-            height = int((box[2] - box[0]) * h)
-            
-            # Ensure coordinates are within frame bounds
-            x = max(0, min(x, w))
-            y = max(0, min(y, h))
-            width = max(0, min(width, w - x))
-            height = max(0, min(height, h - y))
+            box = boxes[max_idx]
+            coords = np.array([box[1] * w, box[0] * h, 
+                             (box[3] - box[1]) * w, 
+                             (box[2] - box[0]) * h])
+            coords = np.clip(coords, 0, [w, h, w-coords[0], h-coords[1]])
             
             detected_class = self.labels[int(classes[max_idx])]
-            print(f"Detected {detected_class} with confidence {max_score:.2f}")
             
             return {
-                'bounds': (x, y, width, height),
+                'bounds': tuple(coords.astype(int)),
                 'class': detected_class,
-                'score': float(max_score)
+                'score': float(max_score),
+                'inference_time': self._last_inference_time
             }
             
         except Exception as e:
@@ -118,3 +143,8 @@ class TFLiteDetector(ObjectDetector):
         except Exception as e:
             print(f"Error loading labels: {str(e)}")
             raise
+
+    @property
+    def inference_fps(self):
+        """Get FPS based purely on inference time"""
+        return 1.0 / self._last_inference_time if self._last_inference_time > 0 else 0

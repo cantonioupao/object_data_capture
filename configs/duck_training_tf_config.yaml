@@ -1,0 +1,39 @@
+model:
+  input_shape: [224, 224, 3]
+  num_classes: 1  # Just duck class
+  backbone: "mobilenetv2"
+  pretrained_weights: "models/mobilenet_ssd_little/detect.tflite"
+
+data:
+  train_path: "datasets/duck_dataset_tflite/train"
+  val_path: "datasets/duck_dataset_tflite/val"
+  batch_size: 4  # Smaller batch size for fine-tuning
+  prefetch_size: 2
+
+augmentation:
+  random_flip: true
+  random_rotation: 15
+  random_brightness: 0.2
+  random_contrast: 0.2
+  random_saturation: 0.2
+  random_hue: 0.1
+
+training:
+  learning_rate: 0.0001  # Lower learning rate for fine-tuning
+  epochs: 50
+  box_loss_weight: 1.0
+  checkpoint_frequency: 5
+  checkpoint_dir: "train/checkpoints/duck_model"
+  early_stopping_patience: 10
+  fine_tuning: true  # Flag to indicate fine-tuning mode
+
+callbacks:
+  tensorboard:
+    log_dir: "train/logs/duck_model"
+  model_checkpoint:
+    monitor: "val_loss"
+    save_best_only: true
+
+evaluation:
+  iou_threshold: 0.5
+  score_threshold: 0.3

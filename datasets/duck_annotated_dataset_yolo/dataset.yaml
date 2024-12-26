@@ -1,0 +1,6 @@
+names:
+- duck
+nc: 1
+path: C:\Users\chris\OneDrive\Desktop\object_data_capture\datasets\annotated_dataset
+train: train
+val: val
